@@ -3,48 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery Walk - Votação</title>
+    <title>Gallery Walk - Avaliação A3</title>
     <style>
-        /* ================= CSS MANTIDO ================= */
+        /* ================= CSS (Estilos Eletromidia) ================= */
         :root {
             --bg-dark: #121212; --bg-card: #242424; --orange: #FF6600; 
             --text-light: #FFFFFF; --text-gray: #B3B3B3; --success: #4CAF50;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-light); display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 480px; min-height: 100vh; padding: 20px; padding-bottom: 100px; position: relative; }
+        .container { width: 100%; max-width: 480px; min-height: 100vh; padding: 20px; padding-bottom: 120px; } 
+        
         h1, h2 { color: var(--orange); margin-bottom: 15px; text-align: center; }
         p { color: var(--text-gray); margin-bottom: 20px; text-align: center; font-size: 14px; }
-        input[type="text"] { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #333; border-radius: 8px; background-color: var(--bg-card); color: var(--text-light); font-size: 16px; }
-        input:focus { outline: 2px solid var(--orange); }
+        
+        input[type="text"], textarea { 
+            width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #333; 
+            border-radius: 8px; background-color: var(--bg-card); color: var(--text-light); font-size: 16px; 
+        }
+        input:focus, textarea:focus { outline: 2px solid var(--orange); }
+        textarea { resize: vertical; min-height: 100px; }
+        
         .btn { width: 100%; padding: 15px; border: none; border-radius: 8px; background-color: var(--orange); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); background-color: #e65c00; }
-        .btn:disabled { background-color: #666; cursor: not-allowed; }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background-color: #555; color: #999; cursor: not-allowed; }
         .btn-secondary { background-color: transparent; border: 1px solid var(--text-gray); margin-top: 10px; }
-        .btn-success { background-color: var(--success); margin-top: 20px; }
+        .btn-success { background-color: var(--success); }
+
         .screen { display: none; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Lista de Projetos */
         .projects-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
         .project-card { background-color: var(--bg-card); border: 1px solid #333; border-radius: 8px; padding: 15px; text-align: left; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .project-card:active { background-color: #333; }
         .project-number { font-weight: bold; color: var(--orange); min-width: 35px; }
         .project-title { font-size: 13px; color: var(--text-light); flex: 1; line-height: 1.4; }
+        
         .check-icon { display: none; color: var(--success); font-weight: bold; font-size: 18px; }
         .project-card.voted { border-color: var(--success); }
         .project-card.voted .check-icon { display: block; }
+
+        /* Modal Paginado */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; padding: 20px; z-index: 1000; }
         .modal-overlay.active { display: flex; }
-        .modal-content { background-color: var(--bg-dark); width: 100%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid #333; max-height: 90vh; overflow-y: auto; }
-        .modal-project-name { font-size: 15px; color: var(--text-gray); margin-bottom: 20px; text-align: center; }
-        .criteria-group { margin-bottom: 20px; }
-        .criteria-title { font-size: 14px; margin-bottom: 8px; color: var(--text-light); text-align: left; }
-        .rating-options { display: flex; justify-content: space-between; gap: 5px; }
-        .rating-options input[type="radio"] { display: none; }
-        .rating-options label { flex: 1; background-color: var(--bg-card); padding: 12px 0; text-align: center; border-radius: 6px; cursor: pointer; font-weight: bold; border: 1px solid #444; transition: 0.2s; }
-        .rating-options input[type="radio"]:checked + label { background-color: var(--orange); border-color: var(--orange); color: white; }
-        .floating-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-dark); padding: 15px 20px; border-top: 1px solid #333; display: none; justify-content: center; z-index: 100; }
+        .modal-content { background-color: var(--bg-dark); width: 100%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid #333; max-height: 90vh; display: flex; flex-direction: column; }
+        
+        .modal-header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .modal-project-name { font-size: 14px; color: var(--text-gray); }
+        
+        .step-indicator { font-size: 12px; color: var(--orange); font-weight: bold; margin-bottom: 10px; text-align: center; text-transform: uppercase; }
+        
+        .modal-body { overflow-y: auto; flex: 1; margin-bottom: 20px; padding-right: 5px; }
+        
+        /* Opções de Votação */
+        .voting-option { display: block; width: 100%; background-color: var(--bg-card); border: 2px solid #333; border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; font-size: 14px; line-height: 1.4; text-align: left; color: var(--text-light); }
+        .voting-option.selected { border-color: var(--orange); background-color: rgba(255, 102, 0, 0.1); }
+        .option-number { font-weight: bold; color: var(--orange); font-size: 16px; display: block; margin-bottom: 4px; }
+        .voting-option.selected .option-number { color: var(--text-light); }
+
+        .modal-footer { display: flex; gap: 10px; }
+        .modal-footer .btn { flex: 1; padding: 12px; font-size: 14px; margin: 0; }
+
+        /* Rodapé Fixo Atualizado */
+        .floating-footer { 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-dark); 
+            padding: 15px 20px; border-top: 1px solid #333; display: none; flex-direction: column; align-items: center; z-index: 100;
+        }
         .floating-footer.active { display: flex; }
+        .footer-status-text { font-size: 14px; color: var(--text-gray); margin-bottom: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -53,7 +81,7 @@
         <!-- TELA 1: IDENTIFICAÇÃO -->
         <div id="screen-login" class="screen active">
             <h1>Gallery Walk</h1>
-            <p>Identifique-se para iniciar a avaliação dos projetos de Melhoria Contínua.</p>
+            <p>Identifique-se para avaliar os projetos.</p>
             <input type="text" id="userName" placeholder="Seu Nome Completo" required>
             <input type="text" id="userRole" placeholder="Seu Cargo" required>
             <button class="btn" onclick="startApp()">Prosseguir</button>
@@ -69,84 +97,125 @@
 
     <!-- BOTÃO FIXO DE FINALIZAR -->
     <div id="footer-finalize" class="floating-footer">
-        <button class="btn btn-success" style="max-width: 440px;" onclick="openFinalizeModal()">Finalizar Votação</button>
+        <div id="footer-status" class="footer-status-text">Faltam X projetos para avaliar.</div>
+        <button class="btn btn-success" style="max-width: 440px;" onclick="openFinalizeModal()">Finalizar Participação</button>
     </div>
 
-    <!-- POP-UP DE VOTAÇÃO -->
+    <!-- POP-UP DE VOTAÇÃO PAGINADO (MODAL) -->
     <div id="voting-modal" class="modal-overlay">
         <div class="modal-content">
-            <h2 id="modal-project-number">Projeto X</h2>
-            <div id="modal-project-name" class="modal-project-name">Nome do projeto</div>
-            <div id="criteria-container"></div>
-            <button id="btn-submit-vote" class="btn" onclick="submitVote()">Enviar Voto</button>
-            <button id="btn-cancel-vote" class="btn btn-secondary" onclick="closeModal('voting-modal')">Cancelar / Voltar</button>
+            <div class="modal-header">
+                <h2 id="modal-project-number" style="margin-bottom: 5px;">Projeto X</h2>
+                <div id="modal-project-name" class="modal-project-name">Nome do projeto</div>
+            </div>
+            
+            <div id="step-indicator" class="step-indicator">Critério 1 de 4</div>
+            
+            <div id="modal-body" class="modal-body">
+                <!-- Conteúdo dinâmico -->
+            </div>
+            
+            <div class="modal-footer">
+                <button id="btn-modal-back" class="btn btn-secondary" onclick="prevStep()">Voltar</button>
+                <button id="btn-modal-next" class="btn" onclick="nextStep()">Próximo</button>
+            </div>
         </div>
     </div>
 
     <!-- POP-UP DE FINALIZAÇÃO -->
     <div id="finalize-modal" class="modal-overlay">
-        <div class="modal-content" style="text-align: center;">
-            <h2>Finalizar Votação?</h2>
+        <div class="modal-content" style="text-align: center; height: auto;">
+            <h2>Encerrar?</h2>
             <p id="finalize-status-message" style="font-size: 16px; margin: 20px 0;"></p>
-            <button class="btn btn-success" onclick="confirmFinalize()">Sim, Finalizar</button>
-            <button class="btn btn-secondary" onclick="closeModal('finalize-modal')">Voltar para os Projetos</button>
-        </div>
-    </div>
-
-    <!-- TELA FINAL -->
-    <div id="screen-thanks" class="modal-overlay" style="background: var(--bg-dark);">
-        <div style="text-align: center; padding: 20px;">
-            <h1 style="color: var(--success); font-size: 50px; margin-bottom: 10px;">✔</h1>
-            <h2>Votação Concluída!</h2>
-            <p>Muito obrigado pela sua participação.</p>
+            <button class="btn btn-success" onclick="confirmFinalize()">Sim, Encerrar</button>
+            <button class="btn btn-secondary" onclick="closeModal('finalize-modal')">Voltar para a Lista</button>
         </div>
     </div>
 
     <script>
-        /* ================= URL INSERIDA ================= */
+        /* URL DE INTEGRAÇÃO COM O GOOGLE SHEETS APLICADA AQUI */
         const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwyzgzd4wPMOSnLwLP4CyFB8pUxQ2U75rrfdEoy6UBqMUK_6yjd6Oxf3d8uEEPYXATH/exec"; 
         
         let currentUser = {}; 
         let currentProjectId = null; 
         const votedProjects = new Set(); 
 
-        const criteriaList = [
-            "Utilização das Ferramentas", "Impacto do Resultado", "Criatividade na Solução",
-            "Clareza na Apresentação", "Aplicabilidade"
+        let currentStep = 0; 
+        let currentVotes = []; 
+        let currentFeedback = "";
+
+        const criteriaData = [
+            {
+                title: "Relevância",
+                options: [
+                    { val: 1, text: "Sem ligação com MCI´s" },
+                    { val: 5, text: "Ligação com MCI´s mas não essenciais" },
+                    { val: 8, text: "Altamente Importante para MCI´s" },
+                    { val: 10, text: "Totalmente essencial para atingir MCI´s" }
+                ]
+            },
+            {
+                title: "Metodologia",
+                options: [
+                    { val: 1, text: "Não cumpriu a metodologia" },
+                    { val: 5, text: "Cumpre a metodologia de maneira básica" },
+                    { val: 8, text: "Muito bom uso das ferramentas" },
+                    { val: 10, text: "Excelente uso das ferramentas e altamente criativo" }
+                ]
+            },
+            {
+                title: "Execução",
+                options: [
+                    { val: 1, text: "Não iniciou a executar o plano" },
+                    { val: 3, text: "Iniciou a implementação do plano, mas não tem nenhuma ação finalizada" },
+                    { val: 5, text: "Tem 50% das ações finalizadas" },
+                    { val: 8, text: "Tem > 80% das ações finalizadas" },
+                    { val: 10, text: "O plano está 100% finalizado" }
+                ]
+            },
+            {
+                title: "Resultado",
+                options: [
+                    { val: 1, text: "Sem resultado financeiro possível" },
+                    { val: 3, text: "Potencial entre 50k e 100k" },
+                    { val: 5, text: "Potencial entre 100k e 300k" },
+                    { val: 8, text: "Potencial entre 300k e 1 milhão" },
+                    { val: 10, text: "Potencial > 1 milhão" }
+                ]
+            }
         ];
 
         const projetosEletromidia = [
-            "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP).",
-            "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais).",
-            "Melhoria do processo de compras (interface com operações).",
-            "Melhoria do processo de recebimento e distribuição de materiais/produtos (Supply).",
-            "Desenvolver um processo efetivo de planejamento, dimensionamento da estrutura e controle dos recursos e equipes, buscando eficiência operacional para suportar o crescimento do negócio.",
-            "Definir, padronizar, digitalizar e automatizar os processos operacionais.",
-            "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Concessão).",
-            "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Regionais).",
-            "Organizar processo robusto de desenvolvimento de projetos de engenharia - APQP (Geral).",
-            "Realizar implantações efetivas - Tempo e custo (Concessões).",
-            "Realizar implantações efetivas - Tempo e custo (Outras verticais - Edifícios, shoppings, aeroportos, clubes, trilhos).",
-            "Desenvolver, aprovar e controlar de maneira efetiva o processo de CAPEX.",
-            "Desenvolver, aprovar e controlar de maneira efetiva o processo de OPEX.",
-            "Otimizar o processo de gestão da frota (locadoras).",
-            "Otimizar o processo de gestão da frota (combustível, multas, seguros, etc).",
-            "Avaliar, melhorar e padronizar o processo de roteirização.",
-            "Definir um processo de monitoramento da gestão dos projetos (Flow Leader).",
-            "Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negocio/qualidade).",
-            "Utilizar inteligência de dados IOT HUB para ser mais ágil na tomada de decisões e melhorias de performance.",
-            "Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance.",
-            "Estabelecer interface efetiva entre Operações e RIG.",
-            "Estabelecer processo efetivo de monitoramento de chamados.",
-            "Estudar e simplificar o processo de evidências através de foto e melhorar a efetividade no uso e funcionalidade do sistema Field Service (EFS).",
-            "Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas.",
-            "Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas).",
-            "Melhorar diagnóstico de falhas.",
-            "Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (São Paulo).",
-            "Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (Regionais).",
-            "Implementar processo ágil e efetivo de manutenção corretiva, melhorando o diagnóstico de falhas.",
-            "Criar e implementar modelo de desenvolvimento de fornecedores para acompanhar o crescimento.",
-            "Desenvolver e implementar processo efetivo de gestão de energia elétrica."
+            { id: 1, nome: "Raphaela Melo – Projeto 1: Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP)." },
+            { id: 2, nome: "Luana – Projeto 2: Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais)." },
+            { id: 3, nome: "Rogério Ferreira – Projeto 3: Melhoria do processo de compras (interface com operações)." },
+            { id: 4, nome: "Sidney Oliveira – Projeto 4: Melhoria do processo de recebimento e distribuição de materiais/produtos (Supply)." },
+            { id: 5, nome: "Pedro Paulo – Projeto 5: Desenvolver um processo efetivo de planejamento, dimensionamento da estrutura e controle dos recursos e equipes, buscando eficiência operacional para suportar o crescimento do negócio." },
+            { id: 6, nome: "Carlos Melo – Projeto 6: Definir, padronizar, digitalizar e automatizar os processos operacionais." },
+            { id: 7, nome: "Fernando Queiroz – Projeto 7: Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Concessão)." },
+            { id: 8, nome: "Iranildo Melo – Projeto 8: Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Regionais)." },
+            { id: 9, nome: "Gerra Guedes – Projeto 9: Organizar processo robusto de desenvolvimento de projetos de engenharia - APQP (Geral)." },
+            { id: 10, nome: "Carlos Prevedel – Projeto 10: Realizar implantações efetivas - Tempo e custo (Concessões)." },
+            { id: 11, nome: "Laiana Tamion – Projeto 11: Realizar implantações efetivas - Tempo e custo (Outras verticais - Edifícios, shoppings, aeroportos, clubes, trilhos)." },
+            { id: 12, nome: "Tacito – Projeto 12: Desenvolver, aprovar e controlar de maneira efetiva o processo de CAPEX." },
+            { id: 13, nome: "Luciana Salles – Projeto 13: Desenvolver, aprovar e controlar de maneira efetiva o processo de OPEX." },
+            { id: 14, nome: "Ricardo Luz – Projeto 14: Otimizar o processo de gestão da frota (locadoras)." },
+            { id: 15, nome: "Igor Sousa – Projeto 15: Otimizar o processo de gestão da frota (combustível, multas, seguros, etc)." },
+            { id: 16, nome: "Matheus Menezes – Projeto 16: Avaliar, melhorar e padronizar o processo de roteirização." },
+            { id: 17, nome: "Carisma Paim – Projeto 17: Definir um processo de monitoramento da gestão dos projetos (Flow Leader)." },
+            { id: 18, nome: "Renata – Projeto 18: Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negocio/qualidade)." },
+            { id: 19, nome: "Thomas – Projeto 19: Utilizar inteligência de dados IOT HUB para ser mais ágil na tomada de decisões e melhorias de performance." },
+            { id: 20, nome: "Nicolas de Libreti – Projeto 20: Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance." },
+            { id: 21, nome: "Mariana Siqueira – Projeto 21: Estabelecer interface efetiva entre Operações e RIG." },
+            { id: 22, nome: "Mateus Cirilo – Projeto 22: Estabelecer processo efetivo de monitoramento de chamados." },
+            { id: 23, nome: "William Pinheiro – Projeto 23: Estudar e simplificar o processo de evidências através de foto e melhorar a efetividade no uso e funcionalidade do sistema Field Service (EFS)." },
+            { id: 24, nome: "Ana Cláudia – Projeto 24: Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas." },
+            { id: 25, nome: "Carolina Bergantini – Projeto 25: Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas)." },
+            { id: 27, nome: "Francisco Souza – Projeto 27: Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (São Paulo)." },
+            { id: 28, nome: "Natalia – Projeto 28: Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (Regionais)." },
+            { id: 29, nome: "Bruno Barreto – Projeto 29: Implementar processo ágil e efetivo de manutenção corretiva, melhorando o diagnóstico de falhas." },
+            { id: 30, nome: "Lucas Borges – Projeto 30: Criar e implementar modelo de desenvolvimento de fornecedores para acompanhar o crescimento." },
+            { id: 31, nome: "Rodrigo Ventura – Projeto 31: Desenvolver e implement processo efetivo de gestão de energia elétrica." }
         ];
 
         function startApp() {
@@ -158,25 +227,37 @@
             document.getElementById('screen-login').classList.remove('active');
             document.getElementById('screen-projects').classList.add('active');
             document.getElementById('footer-finalize').classList.add('active');
+            
             renderProjects();
+            updateCounter(); 
+        }
+
+        function updateCounter() {
+            const total = projetosEletromidia.length;
+            const votados = votedProjects.size;
+            const faltam = total - votados;
+            const statusLabel = document.getElementById('footer-status');
+
+            if (faltam === 0) {
+                statusLabel.innerHTML = '<span style="color: var(--success); font-weight: bold;">Todos os projetos avaliados!</span>';
+            } else {
+                statusLabel.innerText = `Faltam ${faltam} projetos para avaliar.`;
+            }
         }
 
         function renderProjects() {
             const container = document.getElementById('projects-container');
             container.innerHTML = ""; 
 
-            projetosEletromidia.forEach((nomeProjeto, index) => {
-                const num = index + 1;
-                const isVoted = votedProjects.has(num);
-                
+            projetosEletromidia.forEach((projeto) => {
+                const isVoted = votedProjects.has(projeto.id);
                 const card = document.createElement('div');
-                card.id = `card-projeto-${num}`;
+                card.id = `card-projeto-${projeto.id}`;
                 card.className = `project-card ${isVoted ? 'voted' : ''}`;
-                card.onclick = () => openVotingModal(num, nomeProjeto);
+                card.onclick = () => openVotingModal(projeto.id, projeto.nome.replace(/'/g, "\\'"));
                 
                 card.innerHTML = `
-                    <div class="project-number">${num}.</div>
-                    <div class="project-title">${nomeProjeto}</div>
+                    <div class="project-title">${projeto.nome}</div>
                     <div class="check-icon">✔</div>
                 `;
                 container.appendChild(card);
@@ -185,22 +266,14 @@
 
         function openVotingModal(id, nomeProjeto) {
             currentProjectId = id;
-            document.getElementById('modal-project-number').innerText = `Projeto ${id}`;
+            currentStep = 0;
+            currentVotes = [null, null, null, null]; 
+            currentFeedback = "";
+            
+            document.getElementById('modal-project-number').innerText = `Avaliando...`;
             document.getElementById('modal-project-name').innerText = nomeProjeto;
             
-            const criteriaContainer = document.getElementById('criteria-container');
-            criteriaContainer.innerHTML = ""; 
-
-            criteriaList.forEach((criterion, index) => {
-                let html = `<div class="criteria-group"><div class="criteria-title">${criterion}</div><div class="rating-options">`;
-                for(let note = 1; note <= 5; note++) {
-                    html += `<input type="radio" id="crit${index}_nota${note}" name="crit${index}" value="${note}">
-                             <label for="crit${index}_nota${note}">${note}</label>`;
-                }
-                html += `</div></div>`;
-                criteriaContainer.innerHTML += html;
-            });
-
+            renderModalStep();
             document.getElementById('voting-modal').classList.add('active');
         }
 
@@ -208,69 +281,154 @@
             document.getElementById(modalId).classList.remove('active');
         }
 
-        function submitVote() {
-            let notas = [];
-            for (let i = 0; i < criteriaList.length; i++) {
-                const selected = document.querySelector(`input[name="crit${i}"]:checked`);
-                if (selected) notas.push(selected.value);
-                else return alert("Dê uma nota para todos os critérios antes de enviar.");
+        function renderModalStep() {
+            const body = document.getElementById('modal-body');
+            const indicator = document.getElementById('step-indicator');
+            const btnBack = document.getElementById('btn-modal-back');
+            const btnNext = document.getElementById('btn-modal-next');
+            
+            body.innerHTML = "";
+
+            if (currentStep < 4) {
+                const crit = criteriaData[currentStep];
+                indicator.innerText = `Critério ${currentStep + 1} de 4: ${crit.title}`;
+                
+                crit.options.forEach(opt => {
+                    const isSelected = currentVotes[currentStep] === opt.val;
+                    const div = document.createElement('div');
+                    div.className = `voting-option ${isSelected ? 'selected' : ''}`;
+                    div.onclick = () => selectOption(opt.val, div);
+                    
+                    div.innerHTML = `
+                        <span class="option-number">Nota ${opt.val}</span>
+                        ${opt.text}
+                    `;
+                    body.appendChild(div);
+                });
+                
+                btnNext.innerText = "Próximo";
+                btnNext.onclick = nextStep;
+                
+            } else {
+                indicator.innerText = "Passo Final: Comentários";
+                
+                body.innerHTML = `
+                    <p style="color: var(--text-gray); font-size: 13px; text-align:left; margin-bottom: 10px;">
+                        Deixe suas observações, pontos fortes ou sugestões de melhoria (Opcional).
+                    </p>
+                    <textarea id="feedback-text" placeholder="Escreva seu comentário aqui...">${currentFeedback}</textarea>
+                `;
+                
+                btnNext.innerText = "Enviar Avaliação";
+                btnNext.onclick = submitVote;
             }
 
-            const btnSubmit = document.getElementById('btn-submit-vote');
-            const btnCancel = document.getElementById('btn-cancel-vote');
-            btnSubmit.innerText = "Enviando...";
-            btnSubmit.disabled = true;
-            btnCancel.disabled = true;
+            if (currentStep === 0) {
+                btnBack.innerText = "Cancelar";
+                btnBack.onclick = () => closeModal('voting-modal');
+            } else {
+                btnBack.innerText = "Voltar";
+                btnBack.onclick = prevStep;
+            }
+        }
 
-// Prepara os dados com o número e o nome completo do projeto
-            const nomeCompletoDoProjeto = `${currentProjectId} - ${projetosEletromidia[currentProjectId - 1]}`;
+        function selectOption(val, element) {
+            currentVotes[currentStep] = val;
+            const siblings = element.parentElement.children;
+            for(let el of siblings) el.classList.remove('selected');
+            element.classList.add('selected');
+        }
+
+        function nextStep() {
+            if (currentStep < 4 && currentVotes[currentStep] === null) {
+                alert("Por favor, selecione uma opção para continuar.");
+                return;
+            }
+            if (currentStep === 4) {
+                currentFeedback = document.getElementById('feedback-text').value;
+            }
+            if (currentStep < 4) {
+                currentStep++;
+                renderModalStep();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep === 4) {
+                currentFeedback = document.getElementById('feedback-text').value;
+            }
+            if (currentStep > 0) {
+                currentStep--;
+                renderModalStep();
+            }
+        }
+
+        function submitVote() {
+            currentFeedback = document.getElementById('feedback-text').value;
+            
+            const btnNext = document.getElementById('btn-modal-next');
+            const btnBack = document.getElementById('btn-modal-back');
+            btnNext.innerText = "Enviando...";
+            btnNext.disabled = true;
+            btnBack.disabled = true;
+
+            const nomeCompletoDoProjeto = projetosEletromidia.find(p => p.id === currentProjectId).nome;
 
             const dadosDoVoto = {
                 nome: currentUser.name,
                 cargo: currentUser.role,
                 projeto: nomeCompletoDoProjeto,
-                notas: notas
+                notas: currentVotes, 
+                comentario: currentFeedback
             };
 
+            // Envio real ativado
             fetch(GOOGLE_SHEETS_URL, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                method: "POST", mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dadosDoVoto)
-            })
-            .then(response => {
-                votedProjects.add(currentProjectId);
-                const card = document.getElementById(`card-projeto-${currentProjectId}`);
-                card.classList.add('voted');
-                closeModal('voting-modal');
-            })
-            .catch(error => {
-                alert("Houve um erro de conexão. Tente enviar novamente.");
-                console.error(error);
-            })
-            .finally(() => {
-                btnSubmit.innerText = "Enviar Voto";
-                btnSubmit.disabled = false;
-                btnCancel.disabled = false;
+            }).then(() => {
+                setTimeout(() => {
+                    votedProjects.add(currentProjectId);
+                    updateCounter(); 
+                    
+                    const card = document.getElementById(`card-projeto-${currentProjectId}`);
+                    card.classList.add('voted');
+                    closeModal('voting-modal');
+                    
+                    btnNext.disabled = false;
+                    btnBack.disabled = false;
+                }, 800);
+            }).catch(error => {
+                alert("Ocorreu um erro ao enviar. Verifique sua conexão e tente novamente.");
+                btnNext.innerText = "Enviar Avaliação";
+                btnNext.disabled = false;
+                btnBack.disabled = false;
             });
         }
 
         function openFinalizeModal() {
-            const totalProjetos = projetosEletromidia.length;
+            const total = projetosEletromidia.length;
             const votados = votedProjects.size;
-            const faltam = totalProjetos - votados;
-            const msgElement = document.getElementById('finalize-status-message');
+            const faltam = total - votados;
+            const msg = document.getElementById('finalize-status-message');
 
             if (faltam === 0) {
-                msgElement.innerHTML = `<span style="color: var(--success); font-weight: bold;">Parabéns! Você avaliou todos os ${totalProjetos} projetos.</span><br><br>Deseja encerrar?`;
+                msg.innerHTML = `<span style="color: var(--success); font-weight: bold;">Parabéns! Todos os projetos avaliados.</span><br><br>Deseja encerrar o aplicativo?`;
             } else {
-                msgElement.innerHTML = `Você avaliou <b>${votados}</b> de ${totalProjetos} projetos.<br><br>Ainda faltam avaliar <span style="color: var(--orange); font-weight: bold;">${faltam} projetos</span>.<br>Tem certeza que deseja finalizar agora?`;
+                msg.innerHTML = `Você avaliou <b>${votados}</b> de ${total} projetos.<br><br>Tem certeza que deseja encerrar agora?`;
             }
             document.getElementById('finalize-modal').classList.add('active');
         }
 
         function confirmFinalize() {
-            closeModal('finalize-modal');
-            document.getElementById('screen-thanks').classList.add('active');
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: white;">
+                    <h1 style="color: var(--success); font-size: 50px; margin-bottom: 20px;">✔</h1>
+                    <h2>Obrigado pela participação!</h2>
+                    <p style="color: #B3B3B3; margin-top: 10px;">Você já pode fechar esta tela.</p>
+                </div>
+            `;
         }
     </script>
 </body>

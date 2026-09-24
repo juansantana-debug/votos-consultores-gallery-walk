@@ -217,14 +217,18 @@
     const STORAGE_PREFIX = "eletromidia-gallery-walk-v2:";
 
     // Campos: número, líder, título, implementação (%), impacto financeiro (R$),
+    // Campos: número, líder, título, implementação (%), impacto financeiro,
     // nota financeira, voto popular. null = dado não informado na base recebida.
     const projects = [
       { id: 1, leader: "Raphaela Melo", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP).", implementation: 73, finance: null, financeScore: 5, popular: 5 },
       { id: 2, leader: "Luana", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais).", implementation: 63, finance: null, financeScore: 5, popular: 2 },
+      { id: 1, leader: "Raphaela Melo", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP).", implementation: 73, finance: "Cálculo geral", financeScore: 5, popular: 5 },
+      { id: 2, leader: "Luana", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais).", implementation: 63, finance: "Cálculo geral", financeScore: 5, popular: 2 },
       { id: 3, leader: "Rogério Ferreira", title: "Melhoria do processo de compras (interface com operações).", implementation: 98, finance: 114118, financeScore: 5, popular: null },
       { id: 4, leader: "Sidney Oliveira", title: "Melhoria do processo de recebimento e distribuição de materiais/produtos (Supply).", implementation: 66, finance: 41000, financeScore: 1, popular: 1 },
       { id: 5, leader: "Pedro Paulo", title: "Desenvolver um processo efetivo de planejamento, dimensionamento da estrutura e controle dos recursos e equipes, buscando eficiência operacional para suportar o crescimento do negócio.", implementation: 80, finance: 1258749.18, financeScore: 10, popular: 10 },
       { id: 6, leader: "Carlos Melo", title: "Definir, padronizar, digitalizar e automatizar os processos operacionais.", implementation: 43, finance: null, financeScore: 5, popular: 8 },
+      { id: 6, leader: "Carlos Melo", title: "Definir, padronizar, digitalizar e automatizar os processos operacionais.", implementation: 43, finance: "Cálculo geral", financeScore: 5, popular: 8 },
       { id: 7, leader: "Fernando Queiroz", title: "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Concessão).", implementation: 83, finance: 116748.58, financeScore: 5, popular: 4 },
       { id: 8, leader: "Iranildo Melo", title: "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Outras verticais).", implementation: 43, finance: 43757.08, financeScore: 1, popular: 2 },
       { id: 9, leader: "Gerra Guedes", title: "Organizar processo robusto de desenvolvimento de projetos de engenharia - APQP (Geral).", implementation: 61, finance: 17640907.41, financeScore: 10, popular: 6 },
@@ -237,13 +241,17 @@
       { id: 16, leader: "Matheus Menezes", title: "Avaliar, melhorar e padronizar o processo de roteirização.", implementation: 51, finance: 46016.16, financeScore: 1, popular: 2 },
       { id: 17, leader: "Carisma Paim", title: "Definir um processo de monitoramento da gestão dos projetos (Flow Leader).", implementation: 65, finance: 81914.18, financeScore: 3, popular: null },
       { id: 18, leader: "Renata Paulino", title: "Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negócio/qualidade).", implementation: 42, finance: null, financeScore: 5, popular: 2 },
+      { id: 18, leader: "Renata Paulino", title: "Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negócio/qualidade).", implementation: 42, finance: "Cálculo geral", financeScore: 5, popular: 2 },
       { id: 19, leader: "Thomas", title: "Utilizar inteligência de dados IOT HUB para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 35, finance: null, financeScore: null, popular: 2 },
       { id: 20, leader: "Nicolas de Libreti", title: "Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 63, finance: null, financeScore: 5, popular: 2 },
+      { id: 20, leader: "Nicolas de Libreti", title: "Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 63, finance: "Cálculo geral", financeScore: 5, popular: 2 },
       { id: 21, leader: "Mariana Siqueira", title: "Estabelecer interface efetiva entre Operações e RIG.", implementation: 50, finance: 2693091.29, financeScore: 10, popular: 2 },
       { id: 22, leader: "Mateus Cirilo", title: "Estabelecer processo efetivo de monitoramento de chamados.", implementation: 50, finance: 126295.01, financeScore: 5, popular: 4 },
       { id: 23, leader: "William Pinheiro", title: "Estudar e simplificar o processo de evidências através de foto e melhorar a efetividade no uso e funcionalidade do sistema Field Service (EFS).", implementation: 67, finance: 54940.15, financeScore: 3, popular: 2 },
       { id: 24, leader: "Ana Cláudia", title: "Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas.", implementation: 88, finance: null, financeScore: 5, popular: 4 },
       { id: 25, leader: "Carolina Bergantini", title: "Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas).", implementation: 80, finance: null, financeScore: 5, popular: 5 },
+      { id: 24, leader: "Ana Cláudia", title: "Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas.", implementation: 88, finance: "Cálculo geral", financeScore: 5, popular: 4 },
+      { id: 25, leader: "Carolina Bergantini", title: "Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas).", implementation: 80, finance: "Cálculo geral", financeScore: 5, popular: 5 },
       { id: 27, leader: "Francisco Souza", title: "Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (São Paulo).", implementation: 50, finance: 117565.15, financeScore: 5, popular: null },
       { id: 28, leader: "Natalia Ribeiro", title: "Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (Regionais).", implementation: 76, finance: null, financeScore: 1, popular: 2 },
       { id: 29, leader: "Bruno Barreto", title: "Implementar processo ágil e efetivo de manutenção corretiva, melhorando o diagnóstico de falhas.", implementation: 50, finance: null, financeScore: 1, popular: null },
@@ -278,7 +286,7 @@
 
     const $ = id => document.getElementById(id);
     const money = value => value === null ? "Não informado" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
-    const financialImpact = project => project.finance === null && project.financeScore === 5 ? "Cálculo geral" : money(project.finance);
+    const money = value => value === null ? "Não informado" : typeof value === "string" ? value : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
     const score = value => value === null ? "Não informado" : String(value);
     const state = { user: null, project: null, step: 0, answers: { relevancia: null, metodologia: null }, comment: "", voted: new Set(), sending: false };
     let previousFocus = null;
@@ -333,7 +341,6 @@
         const leader = document.createElement("p"); leader.className = "leader"; leader.textContent = `Líder: ${p.leader}`;
         const metrics = document.createElement("div"); metrics.className = "card-metrics";
         addMetric(metrics, "Impacto financeiro", money(p.finance));
-        addMetric(metrics, "Impacto financeiro", financialImpact(p));
         addMetric(metrics, "Nota financeira", score(p.financeScore));
         addMetric(metrics, "Nota voto popular", score(p.popular));
         addMetric(metrics, "Implementação", `${p.implementation}%`);
@@ -377,14 +384,12 @@
         const grid = document.createElement("div"); grid.className = "metric-grid";
         grid.append(
           metricTile("Impacto financeiro", money(p.finance)),
-          metricTile("Impacto financeiro", financialImpact(p)),
           metricTile("Nota do impacto financeiro", score(p.financeScore), true),
           metricTile("Nota do voto popular", score(p.popular), true),
           metricTile("Planos de ação implementados", `${p.implementation}%`)
         );
         const note = document.createElement("p"); note.className = "source-note";
         note.textContent = p.financeScore === null ? "A base recebida não associa uma nota financeira a este projeto. Por isso, o campo aparece como não informado." : "Os dados acima foram fornecidos na base do Gallery Walk. “Não informado” indica ausência de valor para este projeto.";
-        note.textContent = p.financeScore === null ? "A base recebida não associa uma nota financeira a este projeto. Por isso, o campo aparece como não informado." : p.finance === null && p.financeScore === 5 ? "O impacto financeiro foi classificado como cálculo geral para este projeto." : "Os dados acima foram fornecidos na base do Gallery Walk. “Não informado” indica ausência de valor para este projeto.";
         body.append(intro, grid, note);
         if (alreadyVoted) { const voted = document.createElement("p"); voted.className = "small-note"; voted.textContent = "Este projeto já foi marcado como avaliado neste navegador."; body.append(voted); }
         $("next-button").textContent = alreadyVoted ? "Fechar" : "Começar avaliação";

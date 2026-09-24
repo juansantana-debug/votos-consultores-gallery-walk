@@ -212,6 +212,7 @@
     // URL original. A implantação do Apps Script deve continuar aceitando POST em /exec.
     const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwyzgzd4wPMOSnLwLP4CyFB8pUxQ2U75rrfdEoy6UBqMUK_6yjd6Oxf3d8uEEPYXATH/exec";
     const STORAGE_PREFIX = "eletromidia-gallery-walk-v2:";
+    const SEND_TIMEOUT_MS = 12000;
 
     // Campos: número, líder, título, implementação (%), impacto financeiro,
     // nota financeira, voto popular. null = dado não informado na base recebida.
@@ -489,6 +490,38 @@
       if (state.step === 0) return closeProject();
       state.step -= 1; renderStep();
     }
+    async function sendVote(body) {
+      // O Apps Script não oferece uma resposta legível para esta página. O
+      // Beacon coloca o POST na fila sem prender a interface esperando o redirect.
+      if (typeof navigator.sendBeacon === "function") {
+        try {
+          const data = new Blob([body], { type: "text/plain;charset=UTF-8" });
+          if (navigator.sendBeacon(GOOGLE_SHEETS_URL, data)) return;
+        } catch { /* Se o Beacon não puder enfileirar, tenta fetch abaixo. */ }
+      }
+
+      const controller = new AbortController();
+      let timer;
+      try {
+        await Promise.race([
+          fetch(GOOGLE_SHEETS_URL, {
+            method: "POST", mode: "no-cors", cache: "no-store",
+            headers: { "Content-Type": "text/plain;charset=UTF-8" },
+            body, signal: controller.signal
+          }),
+          new Promise((_, reject) => {
+            timer = setTimeout(() => {
+              controller.abort();
+              const error = new Error("Tempo de envio esgotado");
+              error.name = "TimeoutError";
+              reject(error);
+            }, SEND_TIMEOUT_MS);
+          })
+        ]);
+      } finally {
+        clearTimeout(timer);
+      }
+    }
     async function submitVote() {
       if (state.sending || state.answers.relevancia === null || state.answers.metodologia === null) return;
       if (!navigator.onLine) return showError("Parece que você está sem conexão. Conecte-se e tente enviar novamente.");
@@ -516,16 +549,16 @@
       $("next-button").disabled = true; $("back-button").disabled = true; $("close-dialog").disabled = true;
       $("next-button").textContent = "Enviando…";
       try {
-        // text/plain evita preflight CORS. A resposta é opaca no GitHub Pages;
-        // o navegador não consegue confirmar o registro na planilha.
-        await fetch(GOOGLE_SHEETS_URL, { method: "POST", mode: "no-cors", cache: "no-store", headers: { "Content-Type": "text/plain;charset=UTF-8" }, body: JSON.stringify(payload) });
+        await sendVote(JSON.stringify(payload));
         state.voted.add(p.id); saveVotes(); updateProgress(); renderProjects();
         state.sending = false;
         closeProject();
         const notice = $("sticky-status");
         notice.textContent = "Envio solicitado. A confirmação na planilha não é retornada por esta página.";
-      } catch {
-        showError("Não foi possível enviar. Verifique sua conexão e tente novamente.");
+      } catch (error) {
+        showError(error.name === "TimeoutError" || error.name === "AbortError"
+          ? "O envio demorou demais. O voto pode ter chegado à planilha; consulte a organização antes de tentar novamente."
+          : "Não foi possível solicitar o envio. Verifique sua conexão e tente novamente.");
         $("next-button").textContent = "Tentar novamente";
       } finally {
         state.sending = false;

@@ -159,7 +159,7 @@
     <section id="screen-login" class="login-layout">
       <div>
         <p class="eyebrow">Projetos A3 · Gallery Walk</p>
-        <h1>Sua avaliação faz a diferença.</h1>
+        <h1>Registre sua avaliação.</h1>
         <p class="lead">Conheça os resultados já apurados de cada projeto e avalie sua relevância e a aplicação da metodologia de melhoria contínua.</p>
         <div class="hero-rule"></div>
       </div>
@@ -365,7 +365,7 @@
         const metrics = document.createElement("div"); metrics.className = "card-metrics";
         addMetric(metrics, "Impacto financeiro", money(p.finance));
         addMetric(metrics, "Nota financeira", score(p.financeScore));
-        addMetric(metrics, "Nota voto popular", score(p.popular));
+        addMetric(metrics, "Voto popular", score(p.popular));
         addMetric(metrics, "Implementação", `${p.implementation}%`);
         const action = document.createElement("span"); action.className = "card-action"; action.textContent = voted ? "Ver dados →" : "Ver dados e avaliar →";
         card.append(top, title, leader, metrics, action); grid.append(card);

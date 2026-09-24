@@ -59,8 +59,6 @@
     .login-card .btn { width: 100%; }
     .small-note { color: var(--muted); font-size: 13px; }
     .hero-rule { width: 95px; height: 5px; border-radius: 20px; background: var(--orange); margin: 30px 0; }
-    .intro-points { display: flex; flex-wrap: wrap; gap: 9px; }
-    .intro-points span { border: 1px solid var(--line); background: var(--surface); color: #e0e0e0; padding: 8px 12px; border-radius: 50px; font-size: 13px; }
     .dashboard-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
     .dashboard-head h1 { margin-bottom: 8px; font-size: clamp(34px, 4vw, 48px); }
     .progress-box { min-width: 215px; text-align: right; }
@@ -101,6 +99,7 @@
     .metric-tile strong { display: block; font-size: clamp(18px, 3vw, 25px); line-height: 1.15; }
     .metric-tile.accent strong { color: var(--orange-light); }
     .source-note { border-left: 3px solid var(--orange); padding: 10px 13px; color: var(--muted); background: #27211c; border-radius: 0 9px 9px 0; font-size: 13px; }
+    .presentation-link { display: inline-flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; margin-top: 15px; }
     .question-title { font-size: clamp(21px, 3vw, 28px); margin-bottom: 8px; }
     .options { display: grid; gap: 9px; margin: 20px 0; }
     .option { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid #555; background: var(--surface-2); border-radius: 12px; cursor: pointer; }
@@ -163,7 +162,6 @@
         <h1>Sua avaliação faz a diferença.</h1>
         <p class="lead">Conheça os resultados já apurados de cada projeto e avalie sua relevância e a aplicação da metodologia de melhoria contínua.</p>
         <div class="hero-rule"></div>
-        <div class="intro-points"><span>30 projetos</span><span>2 critérios de avaliação</span><span>Funciona no celular e no computador</span></div>
       </div>
       <form id="login-form" class="panel login-card">
         <h2>Antes de começar</h2>
@@ -171,7 +169,6 @@
         <div class="field"><label for="user-name">Nome completo</label><input id="user-name" type="text" autocomplete="name" placeholder="Digite seu nome" maxlength="120" required></div>
         <div class="field"><label for="user-role">Cargo</label><input id="user-role" type="text" autocomplete="organization-title" placeholder="Digite seu cargo" maxlength="120" required></div>
         <button class="btn" type="submit">Ver projetos <span aria-hidden="true">→</span></button>
-        <p class="small-note" style="margin: 14px 0 0;">Você pode avaliar os projetos na ordem que preferir.</p>
       </form>
     </section>
 
@@ -216,18 +213,14 @@
     const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwyzgzd4wPMOSnLwLP4CyFB8pUxQ2U75rrfdEoy6UBqMUK_6yjd6Oxf3d8uEEPYXATH/exec";
     const STORAGE_PREFIX = "eletromidia-gallery-walk-v2:";
 
-    // Campos: número, líder, título, implementação (%), impacto financeiro (R$),
     // Campos: número, líder, título, implementação (%), impacto financeiro,
     // nota financeira, voto popular. null = dado não informado na base recebida.
     const projects = [
-      { id: 1, leader: "Raphaela Melo", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP).", implementation: 73, finance: null, financeScore: 5, popular: 5 },
-      { id: 2, leader: "Luana", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais).", implementation: 63, finance: null, financeScore: 5, popular: 2 },
       { id: 1, leader: "Raphaela Melo", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP).", implementation: 73, finance: "Cálculo geral", financeScore: 5, popular: 5 },
       { id: 2, leader: "Luana", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais).", implementation: 63, finance: "Cálculo geral", financeScore: 5, popular: 2 },
       { id: 3, leader: "Rogério Ferreira", title: "Melhoria do processo de compras (interface com operações).", implementation: 98, finance: 114118, financeScore: 5, popular: null },
       { id: 4, leader: "Sidney Oliveira", title: "Melhoria do processo de recebimento e distribuição de materiais/produtos (Supply).", implementation: 66, finance: 41000, financeScore: 1, popular: 1 },
       { id: 5, leader: "Pedro Paulo", title: "Desenvolver um processo efetivo de planejamento, dimensionamento da estrutura e controle dos recursos e equipes, buscando eficiência operacional para suportar o crescimento do negócio.", implementation: 80, finance: 1258749.18, financeScore: 10, popular: 10 },
-      { id: 6, leader: "Carlos Melo", title: "Definir, padronizar, digitalizar e automatizar os processos operacionais.", implementation: 43, finance: null, financeScore: 5, popular: 8 },
       { id: 6, leader: "Carlos Melo", title: "Definir, padronizar, digitalizar e automatizar os processos operacionais.", implementation: 43, finance: "Cálculo geral", financeScore: 5, popular: 8 },
       { id: 7, leader: "Fernando Queiroz", title: "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Concessão).", implementation: 83, finance: 116748.58, financeScore: 5, popular: 4 },
       { id: 8, leader: "Iranildo Melo", title: "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Outras verticais).", implementation: 43, finance: 43757.08, financeScore: 1, popular: 2 },
@@ -240,16 +233,12 @@
       { id: 15, leader: "Igor Sousa", title: "Otimizar o processo de gestão da frota (combustível, multas, seguros, etc.).", implementation: 50, finance: 190296.14, financeScore: 5, popular: 1 },
       { id: 16, leader: "Matheus Menezes", title: "Avaliar, melhorar e padronizar o processo de roteirização.", implementation: 51, finance: 46016.16, financeScore: 1, popular: 2 },
       { id: 17, leader: "Carisma Paim", title: "Definir um processo de monitoramento da gestão dos projetos (Flow Leader).", implementation: 65, finance: 81914.18, financeScore: 3, popular: null },
-      { id: 18, leader: "Renata Paulino", title: "Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negócio/qualidade).", implementation: 42, finance: null, financeScore: 5, popular: 2 },
       { id: 18, leader: "Renata Paulino", title: "Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negócio/qualidade).", implementation: 42, finance: "Cálculo geral", financeScore: 5, popular: 2 },
       { id: 19, leader: "Thomas", title: "Utilizar inteligência de dados IOT HUB para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 35, finance: null, financeScore: null, popular: 2 },
-      { id: 20, leader: "Nicolas de Libreti", title: "Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 63, finance: null, financeScore: 5, popular: 2 },
       { id: 20, leader: "Nicolas de Libreti", title: "Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 63, finance: "Cálculo geral", financeScore: 5, popular: 2 },
       { id: 21, leader: "Mariana Siqueira", title: "Estabelecer interface efetiva entre Operações e RIG.", implementation: 50, finance: 2693091.29, financeScore: 10, popular: 2 },
       { id: 22, leader: "Mateus Cirilo", title: "Estabelecer processo efetivo de monitoramento de chamados.", implementation: 50, finance: 126295.01, financeScore: 5, popular: 4 },
       { id: 23, leader: "William Pinheiro", title: "Estudar e simplificar o processo de evidências através de foto e melhorar a efetividade no uso e funcionalidade do sistema Field Service (EFS).", implementation: 67, finance: 54940.15, financeScore: 3, popular: 2 },
-      { id: 24, leader: "Ana Cláudia", title: "Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas.", implementation: 88, finance: null, financeScore: 5, popular: 4 },
-      { id: 25, leader: "Carolina Bergantini", title: "Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas).", implementation: 80, finance: null, financeScore: 5, popular: 5 },
       { id: 24, leader: "Ana Cláudia", title: "Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas.", implementation: 88, finance: "Cálculo geral", financeScore: 5, popular: 4 },
       { id: 25, leader: "Carolina Bergantini", title: "Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas).", implementation: 80, finance: "Cálculo geral", financeScore: 5, popular: 5 },
       { id: 27, leader: "Francisco Souza", title: "Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (São Paulo).", implementation: 50, finance: 117565.15, financeScore: 5, popular: null },
@@ -258,6 +247,41 @@
       { id: 30, leader: "Lucas Borges", title: "Criar e implementar modelo de desenvolvimento de fornecedores para acompanhar o crescimento.", implementation: 50, finance: null, financeScore: 1, popular: 6 },
       { id: 31, leader: "Rodrigo Ventura", title: "Desenvolver e implementar processo efetivo de gestão de energia elétrica.", implementation: 50, finance: null, financeScore: 1, popular: 1 }
     ];
+
+    // Links da página de apresentações enviada pelo usuário. O projeto 13
+    // aparece lá com "#", ou seja, ainda não há apresentação disponível.
+    const presentationLinks = {
+      1: "https://drive.google.com/open?id=1QD-RQ7bhmymT9wg2C4zrkpSC1GEb7u_n",
+      2: "https://drive.google.com/open?id=1QD-RQ7bhmymT9wg2C4zrkpSC1GEb7u_n",
+      3: "https://drive.google.com/open?id=1VaOG2c69XoTlmeU9iF7y9ZJsriqea3vS",
+      4: "https://drive.google.com/open?id=1cVM3Tp8UpnDA7S5N6RyC9k1iEIc_2j-B",
+      5: "https://docs.google.com/presentation/d/19f_TxtgmkEXiNXBeL4uz8iKfUVGX2K63/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true",
+      6: "https://drive.google.com/open?id=16HKF4tPjeWS2ucXmItjNNJqnttH2nIwP",
+      7: "https://drive.google.com/open?id=1kAXv-4yG4F18pJmpsaQ-iEZbtUZzYq-M",
+      8: "https://drive.google.com/open?id=1DmucAqnu_w3oxkc62mv6dXWfzQf6N9gy",
+      9: "https://drive.google.com/open?id=1Pm3wTUFlpvVchC8PQHgvcY_xinue0OBf",
+      10: "https://drive.google.com/open?id=1eANRSB_502Qrcu_YTT6OjWf0Scj52wiP",
+      11: "https://drive.google.com/open?id=1VHrU1SDnzFape1KOTrQAt38mbLJxTauk",
+      12: "https://drive.google.com/open?id=1ntXObZFnMZO-bXCggLbWZQgzKwJ8bfZ7",
+      13: null,
+      14: "https://drive.google.com/open?id=1nitZmr5DdLU_X7_Vwp9eBLKLQbmQVlqu",
+      15: "https://drive.google.com/open?id=1K3DkNwHDgOd2qMyAtd1IZVEJNwILAHK2",
+      16: "https://drive.google.com/open?id=1d1pmqG5SG-es2GDAN6WM8FgAdjfine43",
+      17: "https://drive.google.com/open?id=1-ccbEWNWBu0t_r8GKAqJjHmFzM82MIT-",
+      18: "https://drive.google.com/open?id=1an2vbjawqxCgKF2TuudmLpuzFw6SrqQZ",
+      19: "https://drive.google.com/open?id=1SSKRZyjraaJOX6xt1_IwcvebJ0oCiUIN",
+      20: "https://drive.google.com/open?id=1pJW-qe8K1q2J047f-VBrrZ3FP7txP765",
+      21: "https://drive.google.com/open?id=1FvnALmxa6Tc6DuL2dtRB0GXQGUJdwCwf",
+      22: "https://drive.google.com/open?id=15J5LBL8_TznL83UmrxvC7FwzhulB3m45",
+      23: "https://drive.google.com/open?id=dOSiMR0G4zE5UalM2oNXzHfqUeJJzYjF",
+      24: "https://drive.google.com/open?id=1kQyUv6mLosJ0djMVK-Dwt70Zu0lcjaCh",
+      25: "https://docs.google.com/presentation/d/1HbTN_FmDxBwvwu9gAjfl_0ciD_PPKpJg/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true",
+      27: "https://drive.google.com/open?id=1N87d8M6nnYW-1p575eCbAFqIsOIT-yEa",
+      28: "https://drive.google.com/open?id=1jHjo4r0Shmrc-UK42NuRYChYwmssJiVb",
+      29: "https://drive.google.com/open?id=1jxKTI94JNvMCX4wnD6xpyUIJ_IuWhVWk",
+      30: "https://docs.google.com/presentation/d/1IhmlsQm5QovsrikgDrndXDudW7vmucNc/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true",
+      31: "https://drive.google.com/open?id=120Ffooa1atdMu87fSUahMC23z8kehGpy"
+    };
 
     // Mantém o identificador textual usado pelo HTML anterior para não mudar a coluna
     // "projeto" em integrações existentes que dependem desse texto.
@@ -285,7 +309,6 @@
     ];
 
     const $ = id => document.getElementById(id);
-    const money = value => value === null ? "Não informado" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
     const money = value => value === null ? "Não informado" : typeof value === "string" ? value : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
     const score = value => value === null ? "Não informado" : String(value);
     const state = { user: null, project: null, step: 0, answers: { relevancia: null, metodologia: null }, comment: "", voted: new Set(), sending: false };
@@ -391,6 +414,22 @@
         const note = document.createElement("p"); note.className = "source-note";
         note.textContent = p.financeScore === null ? "A base recebida não associa uma nota financeira a este projeto. Por isso, o campo aparece como não informado." : "Os dados acima foram fornecidos na base do Gallery Walk. “Não informado” indica ausência de valor para este projeto.";
         body.append(intro, grid, note);
+        if (presentationLinks[p.id]) {
+          const link = document.createElement("a");
+          link.className = "btn btn-secondary presentation-link";
+          link.href = presentationLinks[p.id];
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Abrir apresentação ↗";
+          body.append(link);
+        } else {
+          const unavailable = document.createElement("button");
+          unavailable.type = "button";
+          unavailable.className = "btn btn-secondary presentation-link";
+          unavailable.textContent = "Apresentação indisponível";
+          unavailable.disabled = true;
+          body.append(unavailable);
+        }
         if (alreadyVoted) { const voted = document.createElement("p"); voted.className = "small-note"; voted.textContent = "Este projeto já foi marcado como avaliado neste navegador."; body.append(voted); }
         $("next-button").textContent = alreadyVoted ? "Fechar" : "Começar avaliação";
       } else if (state.step === 1 || state.step === 2) {
